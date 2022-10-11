@@ -13,6 +13,6 @@ import {
 
     @get('/hello')
     greet(@param.query.string('name') name: string) {
-        return `Hello ${name}`;
+        return {message: `Hello ${name}`};
       }
   }
