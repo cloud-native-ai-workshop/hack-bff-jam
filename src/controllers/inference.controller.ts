@@ -1,6 +1,6 @@
 import { inject } from "@loopback/core";
 import { repository } from "@loopback/repository";
-import { param, response, ResponseObject, get } from "@loopback/rest";
+import { param, get } from "@loopback/rest";
 import { EmployeeRepository } from "../repositories";
 // import { Inference, Predictions } from "../services";
 import { Inference } from "../services";
@@ -76,44 +76,44 @@ import { Inference } from "../services";
 /**
  * OpenAPI response for predictions
  */
-const PREDICTIONS_RES: ResponseObject = {
-  description: 'Predictions Response',
-  content: {
-    'application/json': {
-      schema: {
-        type: 'object',
-        title: 'PredictionsResponse',
-        properties: {
-          predictions: {
-            type: 'array',
-            items: {
-              type: 'object',
-              properties: {
-                fields: {
-                  type: 'array',
-                  example: [
-                    "prediction",
-                    "probability"
-                  ]
-                },
-                values: {
-                  type: 'array',
-                  example: [
-                    "F",
-                    [
-                      0.9753829214790144,
-                      0.024617078520985585
-                    ]
-                  ]
-                }
-              }
-            }
-          },
-        },
-      },
-    },
-  },
-};
+// const PREDICTIONS_RES: ResponseObject = {
+//   description: 'Predictions Response',
+//   content: {
+//     'application/json': {
+//       schema: {
+//         type: 'object',
+//         title: 'PredictionsResponse',
+//         properties: {
+//           predictions: {
+//             type: 'array',
+//             items: {
+//               type: 'object',
+//               properties: {
+//                 fields: {
+//                   type: 'array',
+//                   example: [
+//                     "prediction",
+//                     "probability"
+//                   ]
+//                 },
+//                 values: {
+//                   type: 'array',
+//                   example: [
+//                     "F",
+//                     [
+//                       0.9753829214790144,
+//                       0.024617078520985585
+//                     ]
+//                   ]
+//                 }
+//               }
+//             }
+//           },
+//         },
+//       },
+//     },
+//   },
+// };
 
 export class InferenceController {
   constructor(
@@ -124,7 +124,7 @@ export class InferenceController {
   ) {}
 
   @get('/inference/predictions')
-  @response(200, PREDICTIONS_RES)
+  // @response(200, PREDICTIONS_RES)
   async getPredictions(
     // @requestBody(PREDICTIONS_BODY) payload: PredictionsPayload,
     @param.query.string('username') username: string,
