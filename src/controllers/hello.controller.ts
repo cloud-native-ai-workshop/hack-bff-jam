@@ -7,6 +7,7 @@ import {
     // ResponseObject,
     param,
   } from '@loopback/rest';
+import { UserRepository } from '../repositories';
 import { HelloService } from '../services';
 
   export class HelloController {
@@ -14,6 +15,7 @@ import { HelloService } from '../services';
       // @inject(RestBindings.Http.REQUEST) private req: Request,
       @inject('services.HelloService')
       protected helloService: HelloService,
+      // protected userRepository: UserRepository,
       ) {}
 
     @get('/hello')
@@ -29,4 +31,10 @@ import { HelloService } from '../services';
       greetHi() {
         return {message: 'Hi'}
       }
+
+      // @get('/test')
+      // async testDB(): Promise<Object>{
+      //   // const res = await this.userRepository.find({});
+      //   // return res;
+      // }
   }

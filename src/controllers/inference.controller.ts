@@ -1,5 +1,7 @@
 import { inject } from "@loopback/core";
+import { repository } from "@loopback/repository";
 import { post, param, requestBody, RequestBodyObject, response, ResponseObject } from "@loopback/rest";
+import { EmployeeRepository } from "../repositories";
 import { Inference, Predictions } from "../services";
 
 
@@ -116,6 +118,8 @@ export class InferenceController {
   constructor(
     @inject('services.Inference')
     protected inferenceService: Inference,
+    @repository(EmployeeRepository)
+    public employeeRepository : EmployeeRepository,
   ) {}
 
   @post('/inference/predictions')
@@ -126,9 +130,101 @@ export class InferenceController {
     @param.query.string('password') password: string,
     @param.query.string('model') model: string,
     @param.query.string('version') version?: string,
-  ): Promise<Predictions> {
+  // ): Promise<Predictions> {
+  ): Promise<Object> {
+    const employees = await this.employeeRepository.find({});
+    let employeesData: any = [];
+    let employeesValuesData: any = [];
+    let inputData: any = {
+      input_data: [
+        {
+          fields: ["Age",
+          "BusinessTravel",
+          "DailyRate",
+          "Department",
+          "DistanceFromHome",
+          "Education",
+          "EducationField",
+          "EnvironmentSatisfaction",
+          "Gender",
+          "HourlyRate",
+          "JobInvolvement",
+          "JobLevel",
+          "JobRole",
+          "JobSatisfaction",
+          "MaritalStatus",
+          "MonthlyIncome",
+          "MonthlyRate",
+          "NumCompaniesWorked",
+          "Over18",
+          "OverTime",
+          "PercentSalaryHike",
+          "PerformanceRating",
+          "RelationshipSatisfaction",
+          "StandardHours",
+          "StockOptionLevel",
+          "TotalWorkingYears",
+          "TrainingTimesLastYear",
+          "WorkLifeBalance",
+          "YearsAtCompany",
+          "YearsInCurrentRole",
+          "YearsSinceLastPromotion",
+          "YearsWithCurrManager"],
+          values: []
+        }
+      ]
+    }
+    employees.forEach((employee) => {
+      let employeeData = {
+        EmployeeNumber: employee['EmployeeNumber'],
+        EmployeeName: employee['EmployeeName']
+      }
+      let employeeInputData = [
+        employee["Age"],
+        employee["BusinessTravel"],
+        employee["DailyRate"],
+        employee["Department"],
+        employee["DistanceFromHome"],
+        employee["Education"],
+        employee["EducationField"],
+        employee["EnvironmentSatisfaction"],
+        employee["Gender"],
+        employee["HourlyRate"],
+        employee["JobInvolvement"],
+        employee["JobLevel"],
+        employee["JobRole"],
+        employee["JobSatisfaction"],
+        employee["MaritalStatus"],
+        employee["MonthlyIncome"],
+        employee["MonthlyRate"],
+        employee["NumCompaniesWorked"],
+        employee["Over18"] ? "1" : "0",
+        employee["OverTime"] ? "1" : "0",
+        employee["PercentSalaryHike"],
+        employee["PerformanceRating"],
+        employee["RelationshipSatisfaction"],
+        employee["StandardHours"],
+        employee["StockOptionLevel"],
+        employee["TotalWorkingYears"],
+        employee["TrainingTimesLastYear"],
+        employee["WorkLifeBalance"],
+        employee["YearsAtCompany"],
+        employee["YearsInCurrentRole"],
+        employee["YearsSinceLastPromotion"],
+        employee["YearsWithCurrManager"]
+      ]
+      employeesData.push(employeeData)
+      employeesValuesData.push(employeeInputData)
+    })
+    inputData['input_data'][0]['values'] = employeesValuesData;
+    console.log('before token')
     const token: string = (await this.inferenceService.getToken(username, password)).token;
-    return this.inferenceService.getPredictions(model, version ?? (new Date()).toISOString().split('T')[0], [payload], token);
+    console.log('-----------')
+    console.log(token)
+    console.log('-----------')
+    // return {message: ''}
+    return this.inferenceService.getPredictions(model, version ?? (new Date()).toISOString().split('T')[0], [inputData], token);
+    // return this.inferenceService.getPredictions(model, version ?? (new Date()).toISOString().split('T')[0], [payload], token);
   }
 
 }
