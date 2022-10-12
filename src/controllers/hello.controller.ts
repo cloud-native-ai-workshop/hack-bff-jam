@@ -1,9 +1,9 @@
 import {inject} from '@loopback/core';
 import {
-    Request,
-    RestBindings,
+    // Request,
+    // RestBindings,
     get,
-    response,
+    // response,
     // ResponseObject,
     param,
   } from '@loopback/rest';
