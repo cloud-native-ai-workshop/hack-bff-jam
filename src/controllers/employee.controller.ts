@@ -58,96 +58,95 @@ export class EmployeeController {
     return this.employeeRepository.count(where);
   }
 
-  @get('/employees-test')
-  async findNames(): Promise<Object> {
-    const employees = await this.employeeRepository.find({});
-    let employeesData: any = [];
-    let employeesValuesData: any = [];
-    let inputData: any = {
-      input_data: [
-        {
-          fields: ["Age",
-          "BusinessTravel",
-          "DailyRate",
-          "Department",
-          "DistanceFromHome",
-          "Education",
-          "EducationField",
-          "EnvironmentSatisfaction",
-          "Gender",
-          "HourlyRate",
-          "JobInvolvement",
-          "JobLevel",
-          "JobRole",
-          "JobSatisfaction",
-          "MaritalStatus",
-          "MonthlyIncome",
-          "MonthlyRate",
-          "NumCompaniesWorked",
-          "Over18",
-          "OverTime",
-          "PercentSalaryHike",
-          "PerformanceRating",
-          "RelationshipSatisfaction",
-          "StandardHours",
-          "StockOptionLevel",
-          "TotalWorkingYears",
-          "TrainingTimesLastYear",
-          "WorkLifeBalance",
-          "YearsAtCompany",
-          "YearsInCurrentRole",
-          "YearsSinceLastPromotion",
-          "YearsWithCurrManager"],
-          values: []
-        }
-      ]
-    }
-    employees.forEach((employee) => {
-      let employeeData = {
-        EmployeeNumber: employee['EmployeeNumber'],
-        EmployeeName: employee['EmployeeName']
-      }
-      let employeeInputData = [
-        employee["Age"],
-        employee["BusinessTravel"],
-        employee["DailyRate"],
-        employee["Department"],
-        employee["DistanceFromHome"],
-        employee["Education"],
-        employee["EducationField"],
-        employee["EnvironmentSatisfaction"],
-        employee["Gender"],
-        employee["HourlyRate"],
-        employee["JobInvolvement"],
-        employee["JobLevel"],
-        employee["JobRole"],
-        employee["JobSatisfaction"],
-        employee["MaritalStatus"],
-        employee["MonthlyIncome"],
-        employee["MonthlyRate"],
-        employee["NumCompaniesWorked"],
-        employee["Over18"] ? "1" : "0",
-        employee["OverTime"] ? "1" : "0",
-        employee["PercentSalaryHike"],
-        employee["PerformanceRating"],
-        employee["RelationshipSatisfaction"],
-        employee["StandardHours"],
-        employee["StockOptionLevel"],
-        employee["TotalWorkingYears"],
-        employee["TrainingTimesLastYear"],
-        employee["WorkLifeBalance"],
-        employee["YearsAtCompany"],
-        employee["YearsInCurrentRole"],
-        employee["YearsSinceLastPromotion"],
-        employee["YearsWithCurrManager"]
-      ]
-      employeesData.push(employeeData)
-      employeesValuesData.push(employeeInputData)
-    })
-    inputData['input_data'][0]['values'] = employeesValuesData;
-    
-    return inputData;
-  }
+  // @get('/employees-test')
+  // async findNames(): Promise<Object> {
+  //   const employees = await this.employeeRepository.find({});
+  //   const employeesData: any[] = [];
+  //   const employeesValuesData: any[] = [];
+  //   const inputData: any = {
+  //     input_data: [
+  //       {
+  //         fields: ["Age",
+  //         "BusinessTravel",
+  //         "DailyRate",
+  //         "Department",
+  //         "DistanceFromHome",
+  //         "Education",
+  //         "EducationField",
+  //         "EnvironmentSatisfaction",
+  //         "Gender",
+  //         "HourlyRate",
+  //         "JobInvolvement",
+  //         "JobLevel",
+  //         "JobRole",
+  //         "JobSatisfaction",
+  //         "MaritalStatus",
+  //         "MonthlyIncome",
+  //         "MonthlyRate",
+  //         "NumCompaniesWorked",
+  //         "Over18",
+  //         "OverTime",
+  //         "PercentSalaryHike",
+  //         "PerformanceRating",
+  //         "RelationshipSatisfaction",
+  //         "StandardHours",
+  //         "StockOptionLevel",
+  //         "TotalWorkingYears",
+  //         "TrainingTimesLastYear",
+  //         "WorkLifeBalance",
+  //         "YearsAtCompany",
+  //         "YearsInCurrentRole",
+  //         "YearsSinceLastPromotion",
+  //         "YearsWithCurrManager"],
+  //         values: []
+  //       }
+  //     ]
+  //   }
+  //   employees.forEach((employee) => {
+  //     const employeeData = {
+  //       EmployeeNumber: employee['EmployeeNumber'],
+  //       EmployeeName: employee['EmployeeName']
+  //     }
+  //     const employeeInputData = [
+  //       employee["Age"],
+  //       employee["BusinessTravel"],
+  //       employee["DailyRate"],
+  //       employee["Department"],
+  //       employee["DistanceFromHome"],
+  //       employee["Education"],
+  //       employee["EducationField"],
+  //       employee["EnvironmentSatisfaction"],
+  //       employee["Gender"],
+  //       employee["HourlyRate"],
+  //       employee["JobInvolvement"],
+  //       employee["JobLevel"],
+  //       employee["JobRole"],
+  //       employee["JobSatisfaction"],
+  //       employee["MaritalStatus"],
+  //       employee["MonthlyIncome"],
+  //       employee["MonthlyRate"],
+  //       employee["NumCompaniesWorked"],
+  //       employee["Over18"] ? "1" : "0",
+  //       employee["OverTime"] ? "1" : "0",
+  //       employee["PercentSalaryHike"],
+  //       employee["PerformanceRating"],
+  //       employee["RelationshipSatisfaction"],
+  //       employee["StandardHours"],
+  //       employee["StockOptionLevel"],
+  //       employee["TotalWorkingYears"],
+  //       employee["TrainingTimesLastYear"],
+  //       employee["WorkLifeBalance"],
+  //       employee["YearsAtCompany"],
+  //       employee["YearsInCurrentRole"],
+  //       employee["YearsSinceLastPromotion"],
+  //       employee["YearsWithCurrManager"]
+  //     ]
+  //     employeesData.push(employeeData)
+  //     employeesValuesData.push(employeeInputData)
+  //   })
+  //   inputData['input_data'][0]['values'] = employeesValuesData;
+  //   return inputData;
+  // }
 
   @get('/employees')
   @response(200, {

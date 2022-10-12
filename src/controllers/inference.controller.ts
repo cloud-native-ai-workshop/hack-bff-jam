@@ -1,76 +1,77 @@
 import { inject } from "@loopback/core";
 import { repository } from "@loopback/repository";
-import { post, param, requestBody, RequestBodyObject, response, ResponseObject } from "@loopback/rest";
+import { param, response, ResponseObject, get } from "@loopback/rest";
 import { EmployeeRepository } from "../repositories";
-import { Inference, Predictions } from "../services";
+// import { Inference, Predictions } from "../services";
+import { Inference } from "../services";
 
 
-interface PredictionsPayload {
-  fields: string[],
-  values: (string|number)[][]
-}
+// interface PredictionsPayload {
+//   fields: string[],
+//   values: (string|number)[][]
+// }
 
 /**
  * OpenAPI body for predictions
  */
-const PREDICTIONS_BODY: RequestBodyObject = {
-  description: 'Predictions Body',
-  content: {
-    'application/json': {
-      schema: {
-        type: 'object',
-        title: 'PredictionsBody',
-        properties: {
-          fields: {
-            type: 'array',
-            example: [
-              "ID",
-              "LONGDISTANCE",
-              "INTERNATIONAL",
-              "LOCAL",
-              "DROPPED",
-              "PAYMETHOD",
-              "LOCALBILLTYPE",
-              "LONGDISTANCEBILLTYPE",
-              "USAGE",
-              "RATEPLAN",
-              "GENDER",
-              "STATUS",
-              "CHILDREN",
-              "ESTINCOME",
-              "CAROWNER",
-              "AGE"
-            ]
-          },
-          values: {
-            type: 'array',
-            items: {
-              type: 'array',
-              example: [
-                1,
-                28,
-                0,
-                60,
-                0,
-                "Auto",
-                "FreeLocal",
-                "Standard",
-                89,
-                4,
-                "F",
-                "M",
-                1,
-                23000,
-                "N",
-                45
-              ]
-            }
-          },
-        },
-      },
-    },
-  },
-};
+// const PREDICTIONS_BODY: RequestBodyObject = {
+//   description: 'Predictions Body',
+//   content: {
+//     'application/json': {
+//       schema: {
+//         type: 'object',
+//         title: 'PredictionsBody',
+//         properties: {
+//           fields: {
+//             type: 'array',
+//             example: [
+//               "ID",
+//               "LONGDISTANCE",
+//               "INTERNATIONAL",
+//               "LOCAL",
+//               "DROPPED",
+//               "PAYMETHOD",
+//               "LOCALBILLTYPE",
+//               "LONGDISTANCEBILLTYPE",
+//               "USAGE",
+//               "RATEPLAN",
+//               "GENDER",
+//               "STATUS",
+//               "CHILDREN",
+//               "ESTINCOME",
+//               "CAROWNER",
+//               "AGE"
+//             ]
+//           },
+//           values: {
+//             type: 'array',
+//             items: {
+//               type: 'array',
+//               example: [
+//                 1,
+//                 28,
+//                 0,
+//                 60,
+//                 0,
+//                 "Auto",
+//                 "FreeLocal",
+//                 "Standard",
+//                 89,
+//                 4,
+//                 "F",
+//                 "M",
+//                 1,
+//                 23000,
+//                 "N",
+//                 45
+//               ]
+//             }
+//           },
+//         },
+//       },
+//     },
+//   },
+// };
 
 /**
  * OpenAPI response for predictions
@@ -122,10 +123,10 @@ export class InferenceController {
     public employeeRepository : EmployeeRepository,
   ) {}
 
-  @post('/inference/predictions')
+  @get('/inference/predictions')
   @response(200, PREDICTIONS_RES)
   async getPredictions(
-    @requestBody(PREDICTIONS_BODY) payload: PredictionsPayload,
+    // @requestBody(PREDICTIONS_BODY) payload: PredictionsPayload,
     @param.query.string('username') username: string,
     @param.query.string('password') password: string,
     @param.query.string('model') model: string,
@@ -133,10 +134,10 @@ export class InferenceController {
   // ): Promise<Predictions> {
   ): Promise<Object> {
     const employees = await this.employeeRepository.find({});
-    let employeesData: any = [];
-    let employeesValuesData: any = [];
-    let inputData: any = {
-      input_data: [
+    const employeesData: {EmployeeNumber: number, EmployeeName: string}[] = [];
+    // eslint-disable-next-line
+    const employeesValuesData: any = [];
+    const inputData = [
         {
           fields: ["Age",
           "BusinessTravel",
@@ -173,13 +174,13 @@ export class InferenceController {
           values: []
         }
       ]
-    }
+    
     employees.forEach((employee) => {
-      let employeeData = {
+      const employeeData = {
         EmployeeNumber: employee['EmployeeNumber'],
         EmployeeName: employee['EmployeeName']
       }
-      let employeeInputData = [
+      const employeeInputDataPrediction = [
         employee["Age"],
         employee["BusinessTravel"],
         employee["DailyRate"],
@@ -214,17 +215,14 @@ export class InferenceController {
         employee["YearsWithCurrManager"]
       ]
       employeesData.push(employeeData)
-      employeesValuesData.push(employeeInputData)
+      employeesValuesData.push(employeeInputDataPrediction)
     })
-    inputData['input_data'][0]['values'] = employeesValuesData;
-    console.log('before token')
+    inputData[0]['values'] = employeesValuesData;
+
     const token: string = (await this.inferenceService.getToken(username, password)).token;
-    console.log('-----------')
-    console.log(token)
-    console.log('-----------')
-    // return {message: ''}
-    return this.inferenceService.getPredictions(model, version ?? (new Date()).toISOString().split('T')[0], [inputData], token);
-    // return this.inferenceService.getPredictions(model, version ?? (new Date()).toISOString().split('T')[0], [payload], token);
+    const predictions = await this.inferenceService.getPredictions(model, version ?? (new Date()).toISOString().split('T')[0], [inputData[0]], token);
+    return {employeesData, predictions}
+    // return this.inferenceService.getPredictions(model, version ?? (new Date()).toISOString().split('T')[0], [inputData[0]], token);
   }
 
 }

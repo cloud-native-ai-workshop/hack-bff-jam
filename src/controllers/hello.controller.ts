@@ -7,7 +7,6 @@ import {
     // ResponseObject,
     param,
   } from '@loopback/rest';
-import { UserRepository } from '../repositories';
 import { HelloService } from '../services';
 
   export class HelloController {
