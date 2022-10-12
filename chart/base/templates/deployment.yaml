@@ -66,6 +66,8 @@ spec:
                 configMapKeyRef:
                   name: cpd-config
                   key: base-url
+            - name: API_HOST
+              value: {{ printf "http://%s:80" .Values.connectsTo | quote }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

@@ -3,16 +3,30 @@ import {
     Request,
     RestBindings,
     get,
-    // response,
+    response,
     // ResponseObject,
     param,
   } from '@loopback/rest';
+import { HelloService } from '../services';
 
   export class HelloController {
-    constructor(@inject(RestBindings.Http.REQUEST) private req: Request) {}
+    constructor(
+      // @inject(RestBindings.Http.REQUEST) private req: Request,
+      @inject('services.HelloService')
+      protected helloService: HelloService,
+      ) {}
 
     @get('/hello')
-    greet(@param.query.string('name') name: string) {
+    async greet(
+      @param.query.string('name') name: string
+      ): Promise<Object> {
+        // const res = await this.helloService.getHello(name)
+        // return {message: res}
         return {message: `Hello ${name}`};
+      }
+
+      @get('/hi')
+      greetHi() {
+        return {message: 'Hi'}
       }
   }
